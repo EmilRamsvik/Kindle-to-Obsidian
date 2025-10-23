@@ -1,27 +1,8 @@
+#!/usr/bin/env python3
+
 import shutil
 import subprocess
-
-"""
-This script automates the process of extracting, cleaning, and organizing quotes from Kindle clippings. 
-
-It performs the following functions:
-1. Copies the 'My Clippings.txt' file from a connected Kindle device to a local directory and safely ejects the Kindle.
-2. Extracts quotes from the copied file, organizing them by author or source.
-3. Cleans up the quotes by removing unwanted characters and formatting issues.
-4. Filters out redundant quotes based on the similarity of their starting words.
-5. Writes the cleaned and filtered quotes to individual text files, organized by author or source.
-
-The script is designed for those who wish to digitalize and manage their Kindle clippings efficiently, 
-making it easier to access, share, and reference important quotes.
-
-Usage:
-Run the script with a connected Kindle device. The script will create text files for each author/source
-in a specified directory, containing all the relevant quotes.
-
-Note:
-- Ensure that the Kindle device is properly connected before running the script.
-- Modify the 'notes' directory path as needed to suit your file organization preferences.
-"""
+import os
 
 
 def copy_clippings_file():
@@ -33,8 +14,9 @@ def copy_clippings_file():
             ["osascript", "-e", 'tell application "Finder" to eject "Kindle"']
         )
         print("Copied clippings file from Kindle and ejected Kindle")
-    except:
+    except Exception as e:
         print("Kindle not connected")
+        print("Error:", e)
     return dst_file
 
 
@@ -50,7 +32,8 @@ def extract_quotes_from_file(filename):
             try:
                 key = header.split("-")[1].strip()
                 key = key.split("_")[0].strip()
-            except:
+            except Exception as e:
+                print(f"Error parsing header: {header} in {filename} with error: {e}")
                 key = header
             quote = lines[-1].strip()
             if key not in quotes_by_author:
@@ -60,20 +43,18 @@ def extract_quotes_from_file(filename):
         return quotes_by_author
 
 
-import os
-
 
 def write_quotes_to_file(key, quotes):
     quotes = remove_quotes_with_similar_first_words(quotes, 5)
     quotes = [clean_quote_special_characters(quote) for quote in quotes]
     filename = key + ".txt"
-    notes_dir = "notes"  # set notes directory here
-    if os.path.exists(os.path.join(notes_dir, filename)):
+    parsed_notes_path = "parsed_notes/"
+    if filename in os.listdir(parsed_notes_path):
         pass
     else:
         with open(filename, "w") as f:
             for quote in quotes:
-                f.write("- *" + quote + "* \n \n")
+                f.write("- " + quote + " \n \n")
         print(f"Wrote quotes to file '{filename}'")
 
 
@@ -101,6 +82,7 @@ def write_all_quotes(quotelist):
 
 def remove_quotes_with_similar_first_words(quotes, n=5):
     last_words = ""
+    last_quote = ""
     for quote in quotes:
         # split quote into words
         words = quote.split(" ")
