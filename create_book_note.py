@@ -123,6 +123,7 @@ async def process_all_unparsed_notes():
 
     processed_count = 0
     skipped_count = 0
+    moved_count = 0
 
     for filename in txt_files:
         file_path = os.path.join(unparsed_notes_dir, filename)
@@ -131,10 +132,17 @@ async def process_all_unparsed_notes():
         print(f"\nFile: {filename}")
         print(f"Title: {title}")
 
-        # Interactive confirmation
-        user_input = input("Parse this file? (y/n): ").strip().lower()
+        # Interactive confirmation with three options
+        user_input = input("1 - Parse book | 2 - Move without parsing | Any other key - Skip: ").strip()
 
-        if user_input != "y":
+        if user_input == "2":
+            # Move to parsed_notes without processing
+            move_to_parsed(file_path)
+            moved_count += 1
+            print(f"Moved {filename} to parsed_notes without processing")
+            print("-" * 60)
+            continue
+        elif user_input != "1":
             print(f"Skipped {filename}")
             skipped_count += 1
             print("-" * 60)
@@ -147,7 +155,7 @@ async def process_all_unparsed_notes():
                 write_to_obsidian(file_path)
 
             # Move to parsed_notes after successful processing
-            #move_to_parsed(file_path)
+            move_to_parsed(file_path)
             processed_count += 1
             print(f"Successfully processed {filename}")
 

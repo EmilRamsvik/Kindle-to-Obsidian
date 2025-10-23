@@ -39,6 +39,7 @@ class BookReview(BaseModel):
 model = OpenAIChatModel(
     "anthropic/claude-3.5-sonnet",
     provider=OpenRouterProvider(api_key=os.getenv("OPENROUTER_API_KEY")),
+
 )
 
 
@@ -77,4 +78,4 @@ Impressions: "Great men gather divisive opinions. Churchill was an imperialist, 
 Tags: ["-books", "-biography", "-history", "-leadership", "-military", "-political-history", "-politics", "-world-war", "-british-empire", "-digital-garden", "-book-review", "-history-british", "-history-military"]
 """
 
-agent = Agent(model, output_type=BookReview, system_prompt=SYSTEM_PROMPT)
+agent = Agent(model, output_type=BookReview, system_prompt=SYSTEM_PROMPT, retries=3)
