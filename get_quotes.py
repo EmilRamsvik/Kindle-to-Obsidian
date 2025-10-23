@@ -43,7 +43,6 @@ def extract_quotes_from_file(filename):
         return quotes_by_author
 
 
-
 def write_quotes_to_file(key, quotes):
     quotes = remove_quotes_with_similar_first_words(quotes, 5)
     quotes = [clean_quote_special_characters(quote) for quote in quotes]

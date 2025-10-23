@@ -211,3 +211,6 @@ __marimo__/
 CLAUDE.MD
 unparsed_notes/
 parsed_notes/
+.python-version
+uv.lock
+*.ipynb

@@ -1,22 +1,24 @@
 ---
-created:{{created_time}} 
+created: {{created_time}} 
 updated: {{updated_time}}
 Pages: 
 Author: 
-finished: false
-Date Finished: 
 tags:
   - books
   - digital-garden
   - book-review
+  {{ tags }}
 ---
+
 # {{ title }}
 
-# 🚀 The Book in 3 Sentences
+# The Book in 3 Sentences
+{{ summary }}
 
-# 🎨 Impressions
+# Impressions
 
+{{ impressions }}
 
-# ✍️ My Top  Quotes
+#️ My Top  Quotes
 
 {{ quotes }}
